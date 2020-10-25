@@ -6,30 +6,28 @@ puppeteer
   .then(async (browser) => {
     // opening a new page and navigating to Reddit
     const page = await browser.newPage();
-    await page.goto('https://5e.tools/races.html#aarakocra_eepc/');
-    await page.waitForSelector('body');
+    await page.goto('https://5e.tools/races.html');
+    const text = await page.waitForSelector('ul.races li a');
 
     // manipulating the page's content
     const grabPosts = await page.evaluate(() => {
-      const allPosts = document.body.querySelectorAll('.Races li');
-
+      const allPosts = document.body.querySelectorAll('ul.races li a');
       // storing the post items in an array then selecting for retrieving content
-      scrapeItems = [];
+      const scrapeItems = [];
       allPosts.forEach((race) => {
-        const postTitle = item.querySelector('h3').innerText;
-        let postDescription = '';
-        try {
-          postDescription = item.querySelector('p').innerText;
-        } catch (err) {}
+        const raceName = race.querySelector('span:nth-child(1)').innerText;
+        const abilities = race.querySelector('span:nth-child(2)').innerText;
+        const source = race.querySelector('span:nth-child(4)').innerText;
         scrapeItems.push({
-          postTitle,
-          postDescription,
+          raceName,
+          abilities,
+          source,
         });
       });
-      const items = {
-        redditPosts: scrapeItems,
+      const races = {
+        races: scrapeItems,
       };
-      return items;
+      return races;
     });
     // outputting the scraped data
     console.log(grabPosts);
