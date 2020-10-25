@@ -1,0 +1,1 @@
+This is the scraper process for the dnd api i'm building.
